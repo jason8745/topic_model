@@ -25,19 +25,19 @@ class LdaModel():
         print('train model  success')
 
     
-    def _save_lda_corpus(self,name:str):
+    def __save_lda_corpus(self,name:str):
         if  self.corpus !=None:
             pickle.dump(self.corpus, open(f'./model/{name}/corpus.pkl', 'wb'))
         else:
             print('No corpus')
     
-    def _save_lda_dict(self,name:str):
+    def __save_lda_dict(self,name:str):
         if self.dictionary !=None:
             self.dictionary.save(f'./model/{name}/dictionary.gensim')
         else:
             print('No dictionary')
 
-    def _save_lda_model(self,name:str):
+    def __save_lda_model(self,name:str):
         if self.model !=None:
             self.model.save(f'./model/{name}/ldamodel.gensim')
         else:
@@ -46,9 +46,9 @@ class LdaModel():
     def save_lda(self,name):
         if not os.path.isdir(f'./model/{name}'):
             os.makedirs(f'./model/{name}')
-        self._save_lda_corpus(name)
-        self._save_lda_dict(name)
-        self._save_lda_model(name)
+        self.__save_lda_corpus(name)
+        self.__save_lda_dict(name)
+        self.__save_lda_model(name)
         print(f'save lda object at ./model/{name}')
 
     def load_lda(self,name):
