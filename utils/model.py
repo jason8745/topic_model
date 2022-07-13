@@ -5,26 +5,22 @@ import os
 
 
 class LdaModel():
-    def __init__(self,text_data) -> None:
+    def __init__(self) -> None:
         self.dictionary = None
         self.corpus = None
         self.model = None
-        self._text_data = text_data
         
     
 
-    @property
-    def text_data(self):
-        return self._text_data
 
 
 
-    def train_model(self,topic_count):
+    def train_model(self,text_data,topic_count):
         """
         :param int topic_count: lda topic count
         """
-        self.dictionary = gensim.corpora.Dictionary(self.text_data )
-        self.corpus = [self.dictionary.doc2bow(text) for text in self.text_data]
+        self.dictionary = gensim.corpora.Dictionary(text_data )
+        self.corpus = [self.dictionary.doc2bow(text) for text in text_data]
         self.model = gensim.models.ldamodel.LdaModel(self.corpus, num_topics = topic_count, id2word=self.dictionary, passes=15)
         print('train model  success')
 
@@ -48,12 +44,20 @@ class LdaModel():
             print('No model')
 
     def save_lda(self,name):
-        if not os.path.isdir(f'./model/name'):
-            os.makedirs(f'./model/name')
+        if not os.path.isdir(f'./model/{name}'):
+            os.makedirs(f'./model/{name}')
         self._save_lda_corpus(name)
         self._save_lda_dict(name)
         self._save_lda_model(name)
         print(f'save lda object at ./model/{name}')
+
+    def load_lda(self,name):
+        self.dictionary = gensim.corpora.Dictionary.load(f'./model/{name}/dictionary.gensim')
+        self.corpus = pickle.load(open(f'./model/{name}/corpus.pkl', 'rb'))
+        self.model = gensim.models.ldamodel.LdaModel.load(f'./model/{name}/ldamodel.gensim')
+        print(f'load model :{name} success')
+
+
 
 
     def predict(self,text)->list:
